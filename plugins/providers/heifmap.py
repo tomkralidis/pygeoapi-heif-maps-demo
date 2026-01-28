@@ -147,7 +147,7 @@ class HEIFMapProvider(BaseProvider):
         ds = None
         ds2 = None
 
-        return png_bytes
+        return bytes(png_bytes)
 
     def __repr__(self):
         return f'<HEIFMapProvider> {self.data}'
