@@ -97,10 +97,10 @@ class HEIFMapProvider(BaseProvider):
         heif_data = pillow_heif.read_heif(self.data)
         image = Image.frombytes(heif_data.mode, heif_data.size,
                                 heif_data.data, 'raw')
+        image = image.rotate(-90, expand=True)
 
         array = np.array(image)
         iheight, iwidth, channels = array.shape
-        channels = array.shape[2]
 
         LOGGER.debug('Creating in memory dataset')
         drv = gdal.GetDriverByName('MEM')
@@ -133,12 +133,11 @@ class HEIFMapProvider(BaseProvider):
         ds2 = gdal.Warp(
             '', ds, outputBounds=bbox,
             dstSRS=self.crs, format='MEM',
-            dstAlpha=True,
             width=width,
             height=height
         )
 
-        LOGGER.debug('Writing to virtual {IMAGE_FORMATS[format_}')
+        LOGGER.debug(f'Writing to virtual {IMAGE_FORMATS[format_]}')
         vsipath = '/vsimem/heifout.png'
         gdal.GetDriverByName(IMAGE_FORMATS[format_]).CreateCopy(vsipath, ds2)
 
